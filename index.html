@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>З Днем Народження</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:'Poppins',sans-serif;
+        }
+
+        body{
+            overflow:hidden;
+            background:linear-gradient(135deg,#0f172a,#1e293b,#4f46e5);
+            color:white;
+            height:100vh;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+        }
+
+        .container{
+            display: grid;
+            justify-items: center;
+            z-index:10;
+            padding:40px;
+            max-width:900px;
+            position: relative;
+            left: -30px;
+        }
+
+        h1{
+            font-size:60px;
+            animation:pop 1s ease;
+            text-shadow:0 0 30px gold;
+        }
+
+        h2{
+            margin-top:15px;
+            font-size:40px;
+            color:#ffd54f;
+            text-shadow: 0 0 50px gold;
+        }
+
+        p{
+            margin-top:30px;
+            font-size:24px;
+            line-height:1.8;
+            text-align:center;
+            width: 920px;
+            text-shadow: 0 0 30px silver;
+        }
+
+        button{
+            margin-top:50px;
+            padding:18px 45px;
+            border:none;
+            border-radius:50px;
+            background:#ffcc00;
+            color:black;
+            font-size:22px;
+            cursor:pointer;
+            transition:.3s;
+        }
+
+        button:hover{
+            transform:scale(1.1);
+            box-shadow:0 0 30px gold;
+        }
+
+        .balloon{
+            position:absolute;
+            bottom:-150px;
+            width:70px;
+            animation:float linear infinite;
+        }
+
+        @keyframes float{
+            from{
+                transform:translateY(0);
+            }
+            to{
+                transform:translateY(-130vh);
+            }
+        }
+
+        @keyframes pop{
+            from{
+                opacity:0;
+                transform:scale(.5);
+            }
+            to{
+                opacity:1;
+                transform:scale(1);
+            }
+        }
+
+        canvas{
+            position:fixed;
+            inset:0;
+        }
+
+        .message{
+            margin-top:40px;
+            font-size:28px;
+            color:#8affb3;
+            opacity:0;
+            transition:4s;
+            width: 900px;
+            display: grid;
+            justify-content: center;
+            text-shadow: 0 0 30px #8affb3;
+        }
+
+        .show{
+            opacity:1;
+        }
+
+    </style>
+</head>
+<body>
+
+<canvas id="canvas"></canvas>
+
+<div class="container">
+
+    <h1>🎉 З Днем Народження! 🎉</h1>
+
+    <h2>БРАТАН</h2>
+
+    <p>
+
+        Бажаю тобі, щоб кожен новий день приносив більше приводів усміхатися.
+
+        Не зважаючи на те скільки ми не бачились,
+        Ти все одно залишаєшся моїм єдиним братом,
+        Тому я завжди допоможу як зможу якщо треба.
+
+        🥳🎂🎁
+
+    </p>
+
+    <button onclick="surprise()">
+        🎁 Відкрити сюрприз
+    </button>
+
+    <div class="message" id="msg">
+
+        Ти найкращий брат, якого тільки можна побажати.
+
+    </div>
+
+</div>
+
+<script>
+
+    // Кульки
+
+    const colors=[
+        "#ff4d4d",
+        "#00e5ff",
+        "#00ff95",
+        "#ffd600",
+        "#ff66ff",
+        "#ff884d"
+    ];
+
+    for(let i=0;i<25;i++){
+
+        const b=document.createElement("div");
+
+        b.className="balloon";
+
+        b.innerHTML="🎈";
+
+        b.style.left=Math.random()*100+"vw";
+        b.style.fontSize=(40+Math.random()*40)+"px";
+        b.style.animationDuration=(8+Math.random()*8)+"s";
+        b.style.animationDelay=Math.random()*8+"s";
+
+        document.body.appendChild(b);
+
+    }
+
+    // Конфеті
+
+    const canvas=document.getElementById("canvas");
+    const ctx=canvas.getContext("2d");
+
+    canvas.width=innerWidth;
+    canvas.height=innerHeight;
+
+    const pieces=[];
+
+    for(let i=0;i<250;i++){
+
+        pieces.push({
+
+            x:Math.random()*canvas.width,
+            y:Math.random()*canvas.height,
+            r:Math.random()*6+2,
+            d:Math.random()*250,
+            color:colors[Math.floor(Math.random()*colors.length)],
+            tilt:Math.random()*10
+
+        });
+
+    }
+
+    function draw(){
+
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+
+        pieces.forEach(p=>{
+
+            ctx.beginPath();
+            ctx.fillStyle=p.color;
+            ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+            ctx.fill();
+
+        });
+
+        update();
+
+        requestAnimationFrame(draw);
+
+    }
+
+    let angle=0;
+
+    function update(){
+
+        angle+=0.01;
+
+        pieces.forEach((p,i)=>{
+
+            p.y+=Math.cos(angle+p.d)+2+p.r/2;
+            p.x+=Math.sin(angle);
+
+            if(p.y>canvas.height){
+
+                pieces[i]={
+
+                    x:Math.random()*canvas.width,
+                    y:-20,
+                    r:p.r,
+                    d:p.d,
+                    color:p.color
+
+                }
+
+            }
+
+        })
+
+    }
+
+    draw();
+
+    function surprise(){
+
+        document.getElementById("msg").classList.add("show");
+
+    }
+
+</script>
+
+</body>
+</html>
